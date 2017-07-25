@@ -15,6 +15,31 @@ def rotate(image, angle, center = None, scale = 1.0):
 
     return rotated
 
+
+def detectCircles(img):
+
+	img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY )
+	img = cv2.medianBlur(img, 5)
+	cimg = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
+
+	circles = cv2.HoughCircles(img, cv2.cv.CV_HOUGH_GRADIENT, 1, 20,
+							   param1=50, param2=25, minRadius=0, maxRadius=50)
+
+
+
+	if (circles is None):
+		return img,0
+
+	circles = np.uint16(np.around(circles))
+	for i in circles[0, :]:
+		# draw the outer circle
+		cv2.circle(cimg, (i[0], i[1]), i[2], (0, 255, 0), 2)
+		# draw the center of the circle
+		cv2.circle(cimg, (i[0], i[1]), 2, (0, 0, 255), 3)
+
+	return cimg, circles
+
+
 def detectTriangles(img):
 
 	height, width = img.shape[:2]
@@ -23,7 +48,10 @@ def detectTriangles(img):
 	gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 	blurred = cv2.GaussianBlur(gray, (5, 5), 0)
 
-	ret, thresh = cv2.threshold(blurred,127,255,cv2.THRESH_BINARY)
+	#ret, thresh = cv2.threshold(blurred,127,255,cv2.THRESH_BINARY)
+	thresh = cv2.adaptiveThreshold(blurred,255,cv2.ADAPTIVE_THRESH_MEAN_C,cv2.THRESH_BINARY,11,2)
+
+
 	contours, h = cv2.findContours(thresh,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)
 
 	counter = 0
