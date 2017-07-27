@@ -4,14 +4,14 @@ import pickle
 from apscheduler.schedulers.background import BackgroundScheduler
 import logging
 from time import sleep
-
+import cv2
 
 robot_command_interval = 0.005
 robot_drive_delay = 0.0
 robot_turn_delay = 0.0
 offset_trigger = 0.25
 
-robot_stop_distance = 1300
+robot_stop_distance = 2000
 
 no_data_counter = 0
 no_data_counter_trig = 20
@@ -25,11 +25,10 @@ logging.basicConfig()
 
 def handle_mqtt_message(data):
 	camera_data = pickle.loads(data)
+	process_camera_data()
 
 
 def process_camera_data():
-
-
 
 	camera_data = pickle.loads(r.get(thing_id))
 
@@ -73,12 +72,11 @@ def process_camera_data():
 
 def on_connect(client, userdata, flags, rc):
 	print("Connected with result code "+str(rc))
-	client.subscribe("bob30/#")
+	client.subscribe( thing_id + '/sensors/camera')
 	client.publish(thing_id + '/hw_control', 's')
 
 
 def on_message(client, userdata, msg):
-	if (msg.topic == thing_id +'/hw_control'):return
 	handle_mqtt_message(msg.payload)
 
 
@@ -96,23 +94,22 @@ client.on_disconnect = on_disconnect
 client.connect("127.0.0.1", 1883, 60)
 client.loop_start()
 
-scheduler = BackgroundScheduler()
-scheduler.start()
-scheduler.add_job(process_camera_data, 'interval', seconds=robot_command_interval)
+# scheduler = BackgroundScheduler()
+# scheduler.start()
+# scheduler.add_job(process_camera_data, 'interval', seconds=robot_command_interval)
 
 
+tmp_img = cv2.imread('images/qrcode.jpg')
+cv2.namedWindow("window")
+cv2.imshow("window", tmp_img)
 
-try:
-	while True:
-		pass
 
-
-except KeyboardInterrupt:
-	pass
+while True:
+	if cv2.waitKey(1) & 0xFF == ord('q'):
+		break
 
 
 client.loop_stop()
-scheduler.shutdown()
-
+# scheduler.shutdown()
 
 print "stopped MQTT client, app terminated"

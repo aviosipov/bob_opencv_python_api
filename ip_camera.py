@@ -38,6 +38,10 @@ while True:
 
 		img = cv2.imdecode(np.fromstring(jpg, dtype=np.uint8),cv2.CV_LOAD_IMAGE_COLOR)
 
+		# save original capture
+		helpers.save_image(img)
+
+
 		# process data
 		img, thresh, response = helpers.detectTriangles(img)
 		helpers.update_thing_shadow(thing_id, response)

@@ -5,6 +5,9 @@ import redis
 import pickle
 import paho.mqtt.client as mqtt
 import heapq
+import time
+
+current_milli_time = lambda: int(round(time.time() * 1000))
 
 r = redis.StrictRedis(host='localhost', port=6379, db=0)
 client = mqtt.Client()
@@ -33,8 +36,8 @@ def update_thing_shadow(thing_id,data):
 	client.publish(thing_id + '/sensors/camera', payload=pickle.dumps(data))
 
 
-
-
+def save_image(image, prefix = 'cap_' , folder = 'capture'):
+	cv2.imwrite( folder + '/' + prefix + str(current_milli_time()) + '.jpg', image)
 
 
 
