@@ -8,7 +8,7 @@ size_list = []
 test_files = [ 'images/test_images/photo1.jpg' , 'images/test_images/photo2.jpg', 'images/test_images/photo3.jpg', 'images/test_images/photo4.jpg', 'images/test_images/photo5.jpg',
 			   'images/test_images/photo6.jpg','images/test_images/photo7.jpg','images/test_images/photo8.jpg', 'images/test_images/photo9.jpg']
 
-#test_files = [ 'images/test_images/photo7.jpg']
+test_files = [ 'images/test_images/photo7.jpg']
 
 for file in test_files:
 
