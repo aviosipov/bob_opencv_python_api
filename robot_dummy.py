@@ -1,33 +1,13 @@
 import cv2
 import paho.mqtt.client as mqtt
-import redis
-import pickle
-import logging
 import eye_logic
 import robot_api
 import time
 
-camera_logic = eye_logic.EyeLogic()
-state_buffer = robot_api.StateBuffer()
-robot_controller = robot_api.RobotController()
-r = redis.StrictRedis(host='localhost', port=6379, db=0)
-thing_id = 'bob30'
-logging.basicConfig()
 
+thing_id = 'bob32'
+robot_controller = robot_api.RobotController(thing_id=thing_id)
 
-def process_camera_data():
-
-	camera_data = pickle.loads(r.get(thing_id))
-	res = camera_logic.process_camera_data(camera_data)
-
-	if not camera_logic.is_no_data():
-		last_res = state_buffer.set_command(res)
-		robot_controller.send_command(last_res)
-	else:
-		robot_controller.send_command(eye_logic.RobotCommands.CMD_R)
-		time.sleep(0.05)
-		robot_controller.send_command(eye_logic.RobotCommands.CMD_S)
-		time.sleep(0.05)
 
 
 def on_connect(client, userdata, flags, rc):
@@ -36,8 +16,7 @@ def on_connect(client, userdata, flags, rc):
 
 
 def on_message(client, userdata, msg):
-	# handle_mqtt_message(msg.payload)
-	process_camera_data()
+	pass
 
 
 def on_disconnect(client, userdata,rc=0):
@@ -61,6 +40,22 @@ cv2.imshow("window", tmp_img)
 
 
 while True:
+
+	robot_controller.send_command(eye_logic.RobotCommands.CMD_F)
+	time.sleep(10)
+
+	robot_controller.send_command(eye_logic.RobotCommands.CMD_S)
+	time.sleep(12)
+
+
+	robot_controller.send_command(eye_logic.RobotCommands.CMD_B)
+	time.sleep(10)
+
+
+	robot_controller.send_command(eye_logic.RobotCommands.CMD_S)
+	time.sleep(12)
+
+
 	if cv2.waitKey(1) & 0xFF == ord('q'):
 		break
 

@@ -12,16 +12,19 @@ class RobotCommands:
 
 class EyeLogic:
 
-	no_data_counter = 0
-	offset_trigger = 0.28
-	stop_distance = 5500
-	no_data_counter_trig = 1
-	y_offset_trig = 0.2
+	def __init__(self, offset_trigger=0.19, stop_distance=9500, no_data_counter_trig=5):
 
-	def __init__(self, offset_trigger=0.2, stop_distance=5500, no_data_counter_trig=1):
+		self.no_data_counter = 0
+		self.y_offset_trig = 0.2
 		self.offset_trigger = offset_trigger
 		self.stop_distance = stop_distance
 		self.no_data_counter_trig = no_data_counter_trig
+
+	def is_no_data(self):
+		if self.no_data_counter >= self.no_data_counter_trig:
+			return True
+		else:
+			return False
 
 	def process_camera_data(self, camera_data):
 
@@ -30,13 +33,8 @@ class EyeLogic:
 		if len(camera_data['triangles']) == 0:
 
 			response = RobotCommands.CMD_S
+			self.no_data_counter += 1
 			return response
-
-			# if self.no_data_counter >= self.no_data_counter_trig:
-			# 	response = RobotCommands.CMD_S
-			# else:
-			# 	self.no_data_counter += 1
-			# return response
 
 		self.no_data_counter = 0
 		tr_data = camera_data['triangles'][0]

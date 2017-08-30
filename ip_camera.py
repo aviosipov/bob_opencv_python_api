@@ -4,7 +4,7 @@ import numpy as np
 import  helpers
 import time
 
-stream=urllib.urlopen('http://192.168.1.13:8080/video')
+stream=urllib.urlopen('http://192.168.1.18:8080/video')
 bytes=''
 
 

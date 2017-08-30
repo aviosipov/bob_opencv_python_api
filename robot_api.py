@@ -24,7 +24,7 @@ class StateBuffer:
 
 class RobotController:
 
-	thing_id = 'bob30'
+	# thing_id = 'bob30'
 	client = mqtt.Client()
 
 	def __init__(self, thing_id='bob30'):
